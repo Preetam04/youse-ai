@@ -1,0 +1,30 @@
+import { DB_NAME } from "@/lib/constants";
+import mongoose from "mongoose";
+
+type ConnectObject = {
+  isConnected?: number;
+};
+
+const connection: ConnectObject = {};
+
+export async function dbConnect(): Promise<void> {
+  if (connection.isConnected) {
+    console.log("Already connected to database");
+    return;
+  }
+
+  try {
+    const db = await mongoose.connect(
+      `${process.env.MONGODB_URI}/${DB_NAME} ` || "youseai",
+      {}
+    );
+
+    connection.isConnected = db.connections[0].readyState;
+
+    console.log("DB Connected Successfully");
+  } catch (error) {
+    console.log("Database connection failed", error);
+
+    process.exit(1);
+  }
+}
