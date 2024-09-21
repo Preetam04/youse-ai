@@ -4,7 +4,7 @@ import { Separator } from "./ui/separator";
 
 const Navbar = () => {
   return (
-    <nav className="w-full h-24 flex items-center justify-center fixed">
+    <nav className="w-full h-24 flex items-center justify-center sticky">
       <div className="container flex items-center justify-between ">
         <h1 className="font-bold text-3xl ">Youse AI</h1>
 
