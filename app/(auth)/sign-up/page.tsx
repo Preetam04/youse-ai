@@ -17,34 +17,47 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { loginSchema } from "@/lib/verificationSchema";
+import { signUpSchema } from "@/lib/verificationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
-const Login = () => {
+const Signup = () => {
   const { toast } = useToast();
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
+      email: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+  const router = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
     try {
-      const res = await signIn("credentials", {
+      const res = await axios.post("/api/sign-up", {
         ...values,
       });
 
-      console.log(res);
+      console.log(res.data.message);
+      toast({
+        title: res.data.message,
+      });
+
+      router.replace("/login");
     } catch (error) {
-      console.log(error);
+      // console.log(error?.response?.data?.message);
+      toast({
+        title: error?.response?.data?.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -52,15 +65,32 @@ const Login = () => {
     <div className="w-full h-screen  flex items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle className="text-xl">Signup</CardTitle>
           <CardDescription>
-            {" "}
-            Enter your credentials login to your account
+            Enter your credentials create to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="username"
+                        type="username"
+                        {...field}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -96,17 +126,17 @@ const Login = () => {
               />
 
               <Button type="submit" className="w-full justify-self-end mt-10 ">
-                Login
+                Create Account
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex justify-between">
           <p className="text-center mt-1 text-sm leading-5  ">
-            Don't have a account?{" "}
-            <Link href={"/sign-up"}>
+            Already have a account?{" "}
+            <Link href={"/login"}>
               <span className="font-semibold hover:text-primary underline cursor-pointer">
-                signup
+                login
               </span>
             </Link>
           </p>
@@ -116,67 +146,4 @@ const Login = () => {
   );
 };
 
-export default Login;
-
-// <div className="w-full h-screen bg-gray-700 flex items-center justify-center">
-// <div className="w-full max-w-md  bg-white rounded-md drop-shadow p-6">
-//   <h1 className="text-4xl text-black font-bold text-center tracking-tight">
-//     Login
-//   </h1>
-//   <p className="text-center mt-3.5 text-base leading-5  text-slate-500">
-//     Enter your credentials login to your account
-//   </p>
-
-//   <div className=" my-5">
-// <Form {...form}>
-//   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-//     <FormField
-//       control={form.control}
-//       name="email"
-//       render={({ field }) => (
-//         <FormItem>
-//           <FormLabel>Email</FormLabel>
-//           <FormControl>
-//             <Input placeholder="email" type="email" {...field} />
-//           </FormControl>
-
-//           <FormMessage />
-//         </FormItem>
-//       )}
-//     />
-
-//     <FormField
-//       control={form.control}
-//       name="password"
-//       render={({ field }) => (
-//         <FormItem>
-//           <FormLabel>Password</FormLabel>
-//           <FormControl>
-//             <Input
-//               placeholder="password"
-//               type="password"
-//               {...field}
-//             />
-//           </FormControl>
-
-//           <FormMessage />
-//         </FormItem>
-//       )}
-//     />
-
-//     <Button type="submit" className="w-full justify-self-end mt-10 ">
-//       Create Account
-//     </Button>
-//   </form>
-// </Form>
-//   </div>
-// <p className="text-center mt-1 text-sm leading-5  text-slate-500">
-//   Don't have a account?{" "}
-//   <Link href={"/sign-up"}>
-//     <span className="font-semibold hover:text-primary underline cursor-pointer">
-//       sign-up
-//     </span>
-//   </Link>
-// </p>
-// </div>
-// </div>
+export default Signup;

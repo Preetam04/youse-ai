@@ -1,12 +1,14 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 interface User extends Document {
   username: string;
   email: string;
   password: string;
   isPasswordCorrect(password: string): Promise<boolean>; // Add the custom method here
-  generateJWTToken(): string;
+  generateAccessToken(): string;
+  accessToken?: string;
 }
 
 const userSchema = new Schema(
@@ -44,19 +46,19 @@ userSchema.methods.isPasswordCorrect = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
 
-// userSchema.methods.generateJWTToken = function () {
-//   return jwt.sign(
-//     {
-//       _id: this._id,
-//       email: this.email,
-//       username: this.username,
-//     },
-//     process.env.JWT_SECRET || "AlternateSeceasdasdYouasdasdasdasd",
-//     {
-//       expiresIn: process.env.JWT_EXPIRY,
-//     }
-//   );
-// };
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      username: this.username,
+    },
+    process.env.NEXTAUTH_SECRET || "AlternateSeceasdasdYouasdasdasdasd",
+    {
+      expiresIn: process.env.NEXTAUTH_EXPIRY,
+    }
+  );
+};
 
 export const User: Model<User> =
   mongoose.models.User || mongoose.model<User>("User", userSchema);
