@@ -1,9 +1,8 @@
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
-import AuthProvider from "@/context/AuthProvider";
+import { Toaster } from "@/components/ui/toaster";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,21 +13,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AuthProvider>
-        <body className={inter.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Navbar />
+      {/* <AuthProvider> */}
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
 
-            {children}
-            <Toaster />
-          </ThemeProvider>
-        </body>
-      </AuthProvider>
+          {children}
+          <Toaster />
+        </ThemeProvider>
+      </body>
+      {/* </AuthProvider> */}
     </html>
   );
 }

@@ -53,9 +53,9 @@ userSchema.methods.generateAccessToken = function () {
       email: this.email,
       username: this.username,
     },
-    process.env.NEXTAUTH_SECRET || "AlternateSeceasdasdYouasdasdasdasd",
+    process.env.ACCESSTOKEN_SECRET as string,
     {
-      expiresIn: process.env.NEXTAUTH_EXPIRY,
+      expiresIn: process.env.ACCESSTOKEN_EXPIRY,
     }
   );
 };
