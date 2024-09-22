@@ -1,14 +1,39 @@
 import mongoose, { Model, Schema } from "mongoose";
 import { string } from "zod";
 
+enum StatusType {
+  "To Do",
+  "In Progress",
+  "Completed",
+}
+
+enum PriorityType {
+  "High",
+  "Medium",
+  "Low",
+}
+
 interface Task extends Document {
+  user: string;
   name: string;
   description: string;
-  status: 
+  status: StatusType;
+  priority: PriorityType;
+  dueDate: Date;
 }
+
+const defaultDueDate = () => {
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + 2); // Add 2 days
+  return currentDate;
+};
 
 const taskSchema = new Schema(
   {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     name: {
       type: String,
       required: true,
@@ -26,6 +51,10 @@ const taskSchema = new Schema(
       type: String,
       enum: ["High", "Low", "Medium"],
       default: "To Do",
+    },
+    dueDate: {
+      type: Date, // Date field for task due date
+      default: defaultDueDate(),
     },
   },
   {
