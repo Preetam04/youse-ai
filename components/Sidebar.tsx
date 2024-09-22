@@ -22,7 +22,7 @@ const SidebarComp = ({ open, openFunc }) => {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 w-72 h-screen z-30 bg-zinc-900 flex flex-col pt-10 px-4 pb-5">
+    <aside className="fixed left-0 top-0 w-72 h-screen z-30 bg-white dark:bg-zinc-900 flex flex-col pt-10 px-4 pb-5">
       <Button
         className="absolute right-4  p-2"
         variant={"secondary"}
@@ -50,7 +50,7 @@ const SidebarComp = ({ open, openFunc }) => {
           Logout
         </Button> */}
 
-        <div className="w-full absolute bottom-0 bg-black/25 flex justify-between p-4 rounded-md">
+        <div className="w-full absolute bottom-0 bg-black/10 dark:bg-black/25 flex justify-between p-4 rounded-md">
           <div className="flex gap-3 items-center">
             {/* <div className=" w-4 h-4 rounded-md text bg-white ">P</div> */}
             <Button className="cursor-default">P</Button>

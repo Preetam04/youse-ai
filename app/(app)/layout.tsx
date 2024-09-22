@@ -11,7 +11,7 @@ export default function HomeLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token: string | null = localStorage.getItem("token");
+  const token: string | null = window.localStorage.getItem("token");
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -28,9 +28,9 @@ export default function HomeLayout({
       <main className="w-full h-screen flex flex-col items-center">
         <Navbar />
 
-        <div className="mt-24 container relative">
+        <div className="mt-24 container relative sm:px-0 px-5 h-screen">
           <Button
-            className="absolute top-4 p-2"
+            className="block p-2 mt-4"
             onClick={() => {
               setSidebarOpen((prev) => !prev);
             }}

@@ -17,8 +17,8 @@ export default function AuthLayout({
   }
 
   return (
-    <main className="w-full h-screen">
-      <div className="absolute right-5 top-5 sm:right-10 sm:top-10">
+    <main className="w-full h-screen px-5 sm:px-0">
+      <div className="absolute right-5 top-5 sm:right-10 sm:top-10 ">
         <DarkModeBtn />
       </div>
       {children}
