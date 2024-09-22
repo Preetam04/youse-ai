@@ -2,13 +2,13 @@ import apiClient from "@/lib/apiClient";
 import { PriorityType, StatusType } from "@/models/task.model";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-interface Task {
+export interface Task {
   _id: string;
   user: string;
   name: string;
   description: string;
-  status: StatusType;
-  priority: PriorityType;
+  status: "To Do" | "In Progress" | "Completed";
+  priority: "High" | "Medium" | "Low";
   dueDate: Date;
 }
 

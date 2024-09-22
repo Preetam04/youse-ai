@@ -1,3 +1,4 @@
+import { dbConnect } from "@/db/dbConnect";
 import { Task } from "@/models/task.model";
 import mongoose from "mongoose";
 
@@ -5,6 +6,7 @@ export async function GET(req: Request) {
   const userData = JSON.parse(req.headers.get("user") as string);
 
   try {
+    await dbConnect();
     const tasks = await Task.find({ user: userData._id }).select(
       "-user -createdAt -updatedAt -__v"
     );

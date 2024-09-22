@@ -3,21 +3,22 @@ import { motion } from "framer-motion";
 import { Flame, Plus, Trash } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "./ui/button";
+import { Task } from "@/store/slices/taskSlice";
 
-type ColumnType = "backlog" | "todo" | "doing" | "done";
+type ColumnType = "In Progress" | "To Do" | "Completed";
 
-type CardType = {
-  title: string;
-  id: string;
-  column: ColumnType;
-};
+// type  = {
+//   title: string;
+//   id: string;
+//   column: ColumnType;
+// };
 
 type ColumnProps = {
   title: string;
   headingColor: string;
-  cards: CardType[];
+  cards: Task[];
   column: ColumnType;
-  setCards: Dispatch<SetStateAction<CardType[]>>;
+  setCards: Dispatch<SetStateAction<Task[]>>;
 };
 
 const Column = ({
@@ -28,9 +29,10 @@ const Column = ({
   setCards,
 }: ColumnProps) => {
   const [active, setActive] = useState(false);
+  // console.log(cards);
 
-  const handleDragStart = (e: DragEvent, card: CardType) => {
-    e.dataTransfer.setData("cardId", card.id);
+  const handleDragStart = (e: DragEvent, card: Task) => {
+    e.dataTransfer.setData("cardId", card._id);
   };
 
   const handleDragEnd = (e: DragEvent) => {
@@ -130,7 +132,11 @@ const Column = ({
     setActive(false);
   };
 
-  const filteredCards = cards.filter((c) => c.column === column);
+  // console.log(column.toLowerCase(), (cards[0].status).toLowerCase().split("").filter(ele => ele !" "));
+
+  const filteredCards = cards.filter((c) => c.status === column);
+
+  // console.log(filteredCards);
 
   return (
     <div className="w-72 shrink-0">
@@ -154,9 +160,15 @@ const Column = ({
             : "dark:bg-neutral-800/0 bg-gray-400/0"
         }`}
       >
-        {filteredCards.map((c) => {
+        {filteredCards.map((c, i) => {
           return (
-            <KanbanCard key={c.id} {...c} handleDragStart={handleDragStart} />
+            <KanbanCard
+              key={c._id}
+              data={c}
+              id={(i + 1).toString()}
+              handleDragStart={handleDragStart}
+              column={column}
+            />
           );
         })}
         <DropIndicator beforeId={null} column={column} />
@@ -166,13 +178,49 @@ const Column = ({
   );
 };
 
-export { BurnBarrel, Column };
+export { Column };
 
-type CardProps = CardType & {
+// type CardProps = Task & {
+//   data: Task;
+//   handleDragStart: Function;
+// };
+
+type CardProps = {
+  data: Task;
+  id: string;
+  column: string;
   handleDragStart: Function;
 };
 
-const KanbanCard = ({ title, id, column, handleDragStart }: CardProps) => {
+// const KanbanCard = ({ data, handleDragStart }: CardProps) => {
+//   console.log(data);
+
+//   return (
+//     <>
+//       {/* <DropIndicator beforeId={id} column={column} /> */}
+//       <motion.div
+//         layout
+//         layoutId={id}
+//         draggable="true"
+//         onDragStart={(e) => handleDragStart(e, { title, id, column })}
+//         className="cursor-grab rounded border dark:border-neutral-700 border-neutral-300 bg-neutral-300 dark:bg-neutral-800 p-4 active:cursor-grabbing relative "
+//       >
+//         <Trash
+//           className=" cursor-pointer text-red-700 absolute right-2 top-2p-1 rounded-md"
+//           size={16}
+//         />
+
+//         <p className="text-sm dark:text-neutral-100 text-neutral-800">
+//           {data.name}
+//         </p>
+//       </motion.div>
+//     </>
+//   );
+// };
+
+const KanbanCard = ({ id, data, column, handleDragStart }: CardProps) => {
+  // console.log(id);
+
   return (
     <>
       <DropIndicator beforeId={id} column={column} />
@@ -180,7 +228,7 @@ const KanbanCard = ({ title, id, column, handleDragStart }: CardProps) => {
         layout
         layoutId={id}
         draggable="true"
-        onDragStart={(e) => handleDragStart(e, { title, id, column })}
+        onDragStart={(e) => handleDragStart(e, { ...data })}
         className="cursor-grab rounded border dark:border-neutral-700 border-neutral-300 bg-neutral-300 dark:bg-neutral-800 p-4 active:cursor-grabbing relative "
       >
         <Trash
@@ -189,7 +237,7 @@ const KanbanCard = ({ title, id, column, handleDragStart }: CardProps) => {
         />
 
         <p className="text-sm dark:text-neutral-100 text-neutral-800">
-          {title}
+          {data.name}
         </p>
       </motion.div>
     </>
@@ -211,107 +259,107 @@ const DropIndicator = ({ beforeId, column }: DropIndicatorProps) => {
   );
 };
 
-const BurnBarrel = ({
-  setCards,
-}: {
-  setCards: Dispatch<SetStateAction<CardType[]>>;
-}) => {
-  const [active, setActive] = useState(false);
+// const BurnBarrel = ({
+//   setCards,
+// }: {
+//   setCards: Dispatch<SetStateAction<Task[]>>;
+// }) => {
+//   const [active, setActive] = useState(false);
 
-  const handleDragOver = (e: DragEvent) => {
-    e.preventDefault();
-    setActive(true);
-  };
+//   const handleDragOver = (e: DragEvent) => {
+//     e.preventDefault();
+//     setActive(true);
+//   };
 
-  const handleDragLeave = () => {
-    setActive(false);
-  };
+//   const handleDragLeave = () => {
+//     setActive(false);
+//   };
 
-  const handleDragEnd = (e: DragEvent) => {
-    const cardId = e.dataTransfer.getData("cardId");
+//   const handleDragEnd = (e: DragEvent) => {
+//     const cardId = e.dataTransfer.getData("cardId");
 
-    setCards((pv) => pv.filter((c) => c.id !== cardId));
+//     setCards((pv) => pv.filter((c) => c.id !== cardId));
 
-    setActive(false);
-  };
+//     setActive(false);
+//   };
 
-  return (
-    <div
-      onDrop={handleDragEnd}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-3xl ${
-        active
-          ? "border-red-800 bg-red-800/20 text-red-500"
-          : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
-      }`}
-    >
-      {active ? <Flame className="animate-bounce" /> : <Trash />}
-    </div>
-  );
-};
+//   return (
+//     <div
+//       onDrop={handleDragEnd}
+//       onDragOver={handleDragOver}
+//       onDragLeave={handleDragLeave}
+//       className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-3xl ${
+//         active
+//           ? "border-red-800 bg-red-800/20 text-red-500"
+//           : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
+//       }`}
+//     >
+//       {active ? <Flame className="animate-bounce" /> : <Trash />}
+//     </div>
+//   );
+// };
 
-type AddCardProps = {
-  column: ColumnType;
-  setCards: Dispatch<SetStateAction<CardType[]>>;
-};
+// type AddCardProps = {
+//   column: ColumnType;
+//   setCards: Dispatch<SetStateAction<Task[]>>;
+// };
 
-const AddCard = ({ column, setCards }: AddCardProps) => {
-  const [text, setText] = useState("");
-  const [adding, setAdding] = useState(false);
+// const AddCard = ({ column, setCards }: AddCardProps) => {
+//   const [text, setText] = useState("");
+//   const [adding, setAdding] = useState(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+//   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
 
-    if (!text.trim().length) return;
+//     if (!text.trim().length) return;
 
-    const newCard = {
-      column,
-      title: text.trim(),
-      id: Math.random().toString(),
-    };
+//     const newCard = {
+//       column,
+//       title: text.trim(),
+//       id: Math.random().toString(),
+//     };
 
-    setCards((pv) => [...pv, newCard]);
+//     setCards((pv) => [...pv, newCard]);
 
-    setAdding(false);
-  };
+//     setAdding(false);
+//   };
 
-  return (
-    <>
-      {adding ? (
-        <motion.form layout onSubmit={handleSubmit}>
-          <textarea
-            onChange={(e) => setText(e.target.value)}
-            autoFocus
-            placeholder="Add new task..."
-            className="w-full rounded border border-violet-400 bg-violet-400/20 p-3 text-sm text-neutral-50 placeholder-violet-300 focus:outline-0"
-          />
-          <div className="mt-1.5 flex items-center justify-end gap-1.5">
-            <button
-              onClick={() => setAdding(false)}
-              className="px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-50"
-            >
-              Close
-            </button>
-            <button
-              type="submit"
-              className="flex items-center gap-1.5 rounded bg-neutral-50 px-3 py-1.5 text-xs text-neutral-950 transition-colors hover:bg-neutral-300"
-            >
-              <span>Add</span>
-              <Plus />
-            </button>
-          </div>
-        </motion.form>
-      ) : (
-        <motion.button
-          layout
-          onClick={() => setAdding(true)}
-          className="flex w-full items-center gap-1.5 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-50"
-        >
-          <span>Add card</span>
-          <Plus />
-        </motion.button>
-      )}
-    </>
-  );
-};
+//   return (
+//     <>
+//       {adding ? (
+//         <motion.form layout onSubmit={handleSubmit}>
+//           <textarea
+//             onChange={(e) => setText(e.target.value)}
+//             autoFocus
+//             placeholder="Add new task..."
+//             className="w-full rounded border border-violet-400 bg-violet-400/20 p-3 text-sm text-neutral-50 placeholder-violet-300 focus:outline-0"
+//           />
+//           <div className="mt-1.5 flex items-center justify-end gap-1.5">
+//             <button
+//               onClick={() => setAdding(false)}
+//               className="px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-50"
+//             >
+//               Close
+//             </button>
+//             <button
+//               type="submit"
+//               className="flex items-center gap-1.5 rounded bg-neutral-50 px-3 py-1.5 text-xs text-neutral-950 transition-colors hover:bg-neutral-300"
+//             >
+//               <span>Add</span>
+//               <Plus />
+//             </button>
+//           </div>
+//         </motion.form>
+//       ) : (
+//         <motion.button
+//           layout
+//           onClick={() => setAdding(true)}
+//           className="flex w-full items-center gap-1.5 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-50"
+//         >
+//           <span>Add card</span>
+//           <Plus />
+//         </motion.button>
+//       )}
+//     </>
+//   );
+// };
