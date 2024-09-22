@@ -10,50 +10,38 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const header = request.headers;
   const token: string | null = header.get("token");
+  // console.log(url.pathname);
 
-  if (!url.pathname.includes("/auth")) {
-    if (token) {
-      const secret = new TextEncoder().encode(process.env.ACCESSTOKEN_SECRET);
+  if (url.pathname.includes("/api")) {
+    if (!url.pathname.includes("/auth")) {
+      if (token) {
+        const secret = new TextEncoder().encode(process.env.ACCESSTOKEN_SECRET);
 
-      const { payload } = await jwtVerify(token, secret);
+        const { payload } = await jwtVerify(token, secret);
 
-      if (payload) {
-        const requestHeaders = new Headers(request.headers);
-        requestHeaders.set("user", JSON.stringify(payload));
+        if (payload) {
+          const requestHeaders = new Headers(request.headers);
+          requestHeaders.set("user", JSON.stringify(payload));
 
-        return NextResponse.next({
-          request: {
-            headers: requestHeaders,
-          },
-        });
-      } else {
-      }
-    } else {
-      return Response.json(
-        {
-          message: "Unauthorized!",
-          status: 401,
-        },
-        {
-          status: 401,
+          return NextResponse.next({
+            request: {
+              headers: requestHeaders,
+            },
+          });
         }
-      );
+      } else {
+        return Response.json(
+          {
+            message: "Unauthorized!",
+            status: 401,
+          },
+          {
+            status: 401,
+          }
+        );
+      }
     }
-  } else {
   }
-
-  // if (
-  //   token &&
-  //   (url.pathname.startsWith("/login") ||
-  //     url.pathname.startsWith("/sign-up") ||
-  //     url.pathname == "/")
-  // ) {
-  //   return NextResponse.redirect(new URL("/home", request.url));
-  // }
-
-  // if ((!token && url.pathname.startsWith("/home")) || url.pathname == "/") {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
 
   return NextResponse.next();
 }

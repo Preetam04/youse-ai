@@ -13,7 +13,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <AuthProvider> */}
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
@@ -21,13 +20,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
+          {/* <Navbar /> */}
 
           {children}
           <Toaster />
         </ThemeProvider>
       </body>
-      {/* </AuthProvider> */}
     </html>
   );
 }
