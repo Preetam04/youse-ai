@@ -5,11 +5,11 @@ export async function GET(req: Request) {
   const userData = JSON.parse(req.headers.get("user") as string);
 
   try {
-    console.log(userData);
+    const tasks = await Task.find({ user: userData._id }).select(
+      "-user -createdAt -updatedAt -__v"
+    );
 
-    const tasks = await Task.find({ user: userData._id }).select("-user");
-
-    console.log(tasks);
+    // console.log(tasks);
 
     return Response.json(
       {

@@ -1,9 +1,35 @@
 "use client";
 import { Column, BurnBarrel } from "@/components/KanbanColumn";
-import { useState } from "react";
+import { getAllTasks } from "@/store/slices/taskSlice";
+import { AppDispatch, RootState } from "@/store/store";
+import { Loader } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const Kanban = () => {
   const [cards, setCards] = useState(DEFAULT_CARDS);
+  const dispatch: AppDispatch = useDispatch();
+
+  const { tasks, loading, error } = useSelector(
+    (state: RootState) => state.task
+  );
+
+  useEffect(() => {
+    dispatch(getAllTasks());
+  }, [dispatch]);
+
+  if (loading)
+    return (
+      <div className="w-full flex flex-col items-center">
+        <Loader size={50} className="text-blue-300 animate-spin " />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="w-full flex flex-col items-center text-red-700">
+        <p>Something went wrong :(</p>
+      </div>
+    );
 
   return (
     <div className="mt-5 h-full">
@@ -40,7 +66,7 @@ const Kanban = () => {
 
 export default Kanban;
 
-type ColumnType = "backlog" | "todo" | "doing" | "done";
+type ColumnType = "todo" | "doing" | "done";
 
 type CardType = {
   title: string;
@@ -50,10 +76,10 @@ type CardType = {
 
 const DEFAULT_CARDS: CardType[] = [
   // BACKLOG
-  { title: "Look into render bug in dashboard", id: "1", column: "backlog" },
-  { title: "SOX compliance checklist", id: "2", column: "backlog" },
-  { title: "[SPIKE] Migrate to Azure", id: "3", column: "backlog" },
-  { title: "Document Notifications service", id: "4", column: "backlog" },
+  // { title: "Look into render bug in dashboard", id: "1", column: "backlog" },
+  // { title: "SOX compliance checklist", id: "2", column: "backlog" },
+  // { title: "[SPIKE] Migrate to Azure", id: "3", column: "backlog" },
+  // { title: "Document Notifications service", id: "4", column: "backlog" },
   // TODO
   {
     title: "Research DB options for new microservice",

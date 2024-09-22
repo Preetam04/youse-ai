@@ -1,13 +1,13 @@
 import mongoose, { Model, Schema } from "mongoose";
 import { string } from "zod";
 
-enum StatusType {
+export enum StatusType {
   "To Do",
   "In Progress",
   "Completed",
 }
 
-enum PriorityType {
+export enum PriorityType {
   "High",
   "Medium",
   "Low",

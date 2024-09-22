@@ -1,3 +1,4 @@
+import { dbConnect } from "@/db/dbConnect";
 import { User } from "@/models/user.model";
 import mongoose from "mongoose";
 
@@ -12,13 +13,14 @@ const getToken = async () => {
 
 export async function GET(req: Request, res) {
   try {
+    await dbConnect();
     const userData = JSON.parse(req.headers.get("user") as string);
+
+    // console.log(userData);
 
     const user = await User.findById(
       new mongoose.Types.ObjectId(userData._id)
     ).select("-password -__v");
-
-    console.log(user);
 
     // const token = req.user;
     // const session = await getToken();

@@ -1,5 +1,6 @@
 "use client";
 import { DarkModeBtn } from "@/components/DarkModeBtn";
+import getLocalToken from "@/lib/getLocalToken";
 import { useRouter } from "next/navigation";
 
 export default function AuthLayout({
@@ -7,7 +8,7 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token: string | null = localStorage.getItem("token");
+  const token: string | null = getLocalToken();
 
   const router = useRouter();
 

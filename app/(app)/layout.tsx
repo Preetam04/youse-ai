@@ -4,18 +4,18 @@ import SidebarComp from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Sidebar } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import getLocalToken from "@/lib/getLocalToken";
 
 export default function HomeLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token: string | null = window.localStorage.getItem("token");
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  console.log(token);
+  const token: string | null = getLocalToken();
 
   const router = useRouter();
 

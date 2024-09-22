@@ -149,7 +149,9 @@ const Column = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={`h-full w-full transition-colors  ${
-          active ? "bg-neutral-800/50" : "bg-neutral-800/0"
+          active
+            ? "dark:bg-neutral-800/50 bg-gray-400/50"
+            : "dark:bg-neutral-800/0 bg-gray-400/0"
         }`}
       >
         {filteredCards.map((c) => {
@@ -179,7 +181,7 @@ const KanbanCard = ({ title, id, column, handleDragStart }: CardProps) => {
         layoutId={id}
         draggable="true"
         onDragStart={(e) => handleDragStart(e, { title, id, column })}
-        className="cursor-grab rounded border dark:border-neutral-700 bg-neutral-200 dark:bg-neutral-800 p-4 active:cursor-grabbing relative "
+        className="cursor-grab rounded border dark:border-neutral-700 border-neutral-300 bg-neutral-300 dark:bg-neutral-800 p-4 active:cursor-grabbing relative "
       >
         <Trash
           className=" cursor-pointer text-red-700 absolute right-2 top-2p-1 rounded-md"
